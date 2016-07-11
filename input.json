@@ -1,0 +1,8 @@
+[ 
+{'hotel_id': 1001, 'user_id': 501, 'score': 7}, 
+{'hotel_id': 1001, 'user_id': 502, 'score': 7}, 
+{'hotel_id': 1001, 'user_id': 503, 'score': 7}, 
+{'hotel_id': 2001, 'user_id': 504, 'score': 10}, 
+{'hotel_id': 3001, 'user_id': 505, 'score': 5}, 
+{'hotel_id': 2001, 'user_id': 506, 'score': 5} 
+]
