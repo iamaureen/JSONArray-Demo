@@ -19,7 +19,7 @@ public class JSONArrayDemo {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException, JSONException {
         // TODO code application logic here
-        FileInputStream fstream = new FileInputStream("input.json");
+     FileInputStream fstream = new FileInputStream("input.json");
      DataInputStream in = new DataInputStream(fstream);
      BufferedReader br = new BufferedReader(new InputStreamReader(in));
      String s, scores="";
@@ -31,21 +31,82 @@ public class JSONArrayDemo {
      get_hotel(scores,5);
     }
     
-    private static void get_hotel(String scores, int avg_score) throws JSONException {
+    private static void get_hotel(String scores, int min_avg_score) throws JSONException {
        
-        Set<Integer> id = new HashSet<Integer>();
+        TreeSet hotelId = new TreeSet<Integer>();
+        
+        final HashMap<Integer, pair> countMap=new HashMap<Integer, pair>();
         JSONArray arr = new JSONArray(scores);
+        
         for (int i=0; i<arr.length(); i++){
-        JSONObject jsonProductObject = arr.getJSONObject(i);
-        int score = jsonProductObject.getInt("score");
-        if(score>=avg_score){
-            id.add(jsonProductObject.getInt("hotel_id"));
+        JSONObject obj = arr.getJSONObject(i);
+        //get hotel id and score
+        int id=obj.getInt("hotel_id");
+        int score=obj.getInt("score");
+        
+        //check for hotel id, if not exists add       
+        if(!countMap.containsKey(id)){
+            pair pair_score = new pair();
+            pair_score.setTotal_score(score);
+            pair_score.setCount(1);
+           
+            countMap.put(id, pair_score);
+             
         }
+        //if exists add the score to the previous one
+        else{
+           pair temp=countMap.get(id);
+           int temp_score=temp.getTotal_score();
+           int temp_count=temp.getCount();
+
+           temp_score= temp_score + score;
+           temp_count++;
+           pair p=new pair(temp_score,temp_count);
+           countMap.put(id, p);
+            
+        }        
+        
       }
-         //System.out.println(id);
-         //if hotel_id needs to be sorted 
-         TreeSet sortedId = new TreeSet<Integer>(id);
-         System.out.println(sortedId);
+        for(int key: countMap.keySet()){
+            
+            pair p = (pair)countMap.get(key);
+            int avg=(int) Math.ceil(p.getTotal_score()/ p.getCount());
+            if(avg>=min_avg_score){
+                hotelId.add(key);
+            }
+        }
+     
+         System.out.println(hotelId);
     }
     
+}
+
+class pair{
+
+    int total_score;
+    int count;
+    
+    pair() {}
+    
+    public pair(int total_score, int count) {
+        this.total_score = total_score;
+        this.count = count;
+    }
+    
+
+    public int getTotal_score() {
+        return total_score;
+    }
+
+    public void setTotal_score(int total_score) {
+        this.total_score = total_score;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }
